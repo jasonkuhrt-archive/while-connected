@@ -1,0 +1,40 @@
+{
+  "name": "while-connected",
+  "version": "0.0.0",
+  "description": "Invoke a function given that the socket is connected",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "dev": "./node_modules/.bin/mocha --reporter spec --watch",
+    "test-debug": "DEBUG=while-connected ./node_modules/.bin/mocha --reporter spec",
+    "dev-debug": "DEBUG=while-connected ./node_modules/.bin/mocha --reporter spec --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jasonkuhrt/while-connected.git"
+  },
+  "keywords": [
+    "socket",
+    "guard",
+    "connection",
+    "loop",
+    "while",
+    "do",
+    "timeout",
+    "interval"
+  ],
+  "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jasonkuhrt/while-connected/issues"
+  },
+  "homepage": "https://github.com/jasonkuhrt/while-connected",
+  "devDependencies": {
+    "mocha": "~1.17.1",
+    "jasonkuhrt-counter": "~0.1.0",
+    "sinon": "~1.9.0"
+  },
+  "dependencies": {
+    "debug": "~0.7.4"
+  }
+}
