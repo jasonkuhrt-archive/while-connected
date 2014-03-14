@@ -4,10 +4,25 @@ var debug = require('debug')('while-connected');
 
 
 
-function whileConnected(socket, debounce_ms, f){
-  /* If the socket is DOA (dead on arrival) then
+function whileConnected(socket, debounce, f){
+  function is_socket_connected(){
+    return is_connected(socket);
+  }
+  return asyncWhile(is_socket_connected, debounce, f);
+}
+
+
+/* Predicate based on facts demonstrated by:
+https://gist.github.com/jasonkuhrt/9548208 */
+function is_connected(socket){
+  return socket._handle || socket.writable || socket.readable;
+}
+
+
+function asyncWhile(predicate, debounce_ms, f){
+  /* If the predicate is DOA (dead on arrival) then
   abort immediately. */
-  if (is_disconnected(socket)) return;
+  if (!predicate()) return;
 
   /* We need two pieces of state. One, to
   track the countdown timer, and two, to
@@ -47,12 +62,12 @@ function whileConnected(socket, debounce_ms, f){
 
 
   function request_run(){
-    debug('request_run: still connected? %j', !is_disconnected(socket));
+    debug('request_run: still connected? %j', predicate());
 
-    /* Its entirely possible the socket disconnected
+    /* Its entirely possible the predicate changed
     since last run. Our oauth is to abort in this case, ignoring
     the user's request. */
-    if (is_disconnected(socket)) return;
+    if (!predicate()) return;
 
     debug('request_run: countdowned? %j', !Boolean(countdown));
 
@@ -67,23 +82,14 @@ function whileConnected(socket, debounce_ms, f){
   function on_countdowned(){
     debug('on_countdowned: run_requseted? %j', run_requseted);
 
-    /* Its entirely possible the socket disconnected
+    /* Its entirely possible the predicate changed
     during the interval. Our oauth is to abort if so,
     even if a run was requested. */
-    if (is_disconnected(socket)) return;
+    if (!predicate()) return;
 
     countdown = null;
     if (run_requseted) run_again();
   }
-}
-
-
-
-/* Predicate based on facts demonstrated by:
-https://gist.github.com/jasonkuhrt/9548208 */
-
-function is_disconnected(sock){
-  return !sock._handle && !sock.writable && !sock.readable;
 }
 
 
