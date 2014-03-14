@@ -25,15 +25,15 @@ tcpServer.on('connection', function(socket){
 // Every milliseconds update a database field
 // regarding this sockets connection status.
 function trackConnection(socket, interval_ms){
-  var key = 'connections:'+ conn.id;
+  var key = 'connections:'+ socket.id;
   // Make the key's ttl slightly longer than our loop
   // to minimize false positives.
   var key_ttl = (interval_ms/1000) + 2;
 
-  whileConnected(socket, ms, function(again){
+  whileConnected(socket, interval_ms, function(again){
     // Refresh a database key re this socket's
     // connection that expires in 7 seconds.
-    db.setex(key, key_ttl, true, function(){
+    db.setex(key, key_ttl, true, function(err){
       if (err) return console.error(err);
       again();
     });
