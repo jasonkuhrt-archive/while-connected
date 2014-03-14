@@ -1,6 +1,6 @@
 'use strict';
 
-var log = require('debug')('while-connected');
+var debug = require('debug')('while-connected');
 
 
 
@@ -22,7 +22,7 @@ function whileConnected(socket, debounce_ms, f){
 
 
   function run(){
-    log('run');
+    debug('run');
 
     /* Begin a countdown that delays
     request_run until its completion. Importantly
@@ -40,21 +40,21 @@ function whileConnected(socket, debounce_ms, f){
 
 
   function run_again(){
-    log('run_again');
+    debug('run_again');
     run_requseted = false;
     run();
   }
 
 
   function request_run(){
-    log('request_run: still connected? %j', !is_disconnected(socket));
+    debug('request_run: still connected? %j', !is_disconnected(socket));
 
     /* Its entirely possible the socket disconnected
     since last run. Our oauth is to abort in this case, ignoring
     the user's request. */
     if (is_disconnected(socket)) return;
 
-    log('request_run: countdowned? %j', !Boolean(countdown));
+    debug('request_run: countdowned? %j', !Boolean(countdown));
 
     /* Flag the user's re-run request. Its possible that
     countdown has already cleared in which case
@@ -65,7 +65,7 @@ function whileConnected(socket, debounce_ms, f){
 
 
   function on_countdowned(){
-    log('on_countdowned: run_requseted? %j', run_requseted);
+    debug('on_countdowned: run_requseted? %j', run_requseted);
 
     /* Its entirely possible the socket disconnected
     during the interval. Our oauth is to abort if so,
