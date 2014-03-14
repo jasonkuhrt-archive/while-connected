@@ -4,7 +4,6 @@
 var whileConnected = require('../');
 var assert = require('assert');
 var Counter = require('jasonkuhrt-counter');
-var EE = require('events').EventEmitter;
 var sinon = require('sinon');
 
 
@@ -137,12 +136,12 @@ describe('whileConnected', function(){
 // Mock based on facts demonstrated by:
 // https://gist.github.com/jasonkuhrt/9548208
 function mockSocket(){
-  var mock = new EE();
-  mock.writable = true;
-  mock.readable = true;
-  mock._handle = {};
+  var mock = {
+    writable: true,
+    readable: true,
+    _handle: {}
+  };
   mock.disconnect = function disconnect(){
-    mock.emit('close');
     mock.writable = false;
     mock.readable = false;
     mock._handle = null;
